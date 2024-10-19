@@ -2,7 +2,7 @@ import { IProductService } from "./IProductService";
 import { Product } from "./Product";
 import { SimpleDataSource } from "./SimpleDataSource";
 
-class ProductService implements IProductService {
+export class ProductService implements IProductService {
 
     private dataSource: SimpleDataSource;
     private products: Array<Product>;
@@ -25,11 +25,16 @@ class ProductService implements IProductService {
             product.id = this.generateId();
             this.products.push(product);
         } else {
-            let index = this.products.indexOf(product);
-            this.products.splice(index,1,product);
 
-        }
-    
+            let index;
+
+            for (let i = 0; i<this.products.length; i++){
+                if (this.products[i].id === product.id) {
+                    index = i;
+                }
+            }
+            this.products.splice(index,1,product);
+        }  
     }
 
     deleteProduct(product: Product): void {
@@ -37,8 +42,6 @@ class ProductService implements IProductService {
         if (index > 0) {
             this.products.splice(index,1);
         }
-
-    
     }
 
     private generateId(): number {
@@ -46,5 +49,7 @@ class ProductService implements IProductService {
         while (this.getById(key) != null) {
             key++;
         }
+        return key;
+    }
 
 }
